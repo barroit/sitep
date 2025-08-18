@@ -28,6 +28,10 @@ if [ ! -f pnpm-workspace.yaml ]; then
 	cp ../barroit/site-lib/pnpm-workspace.yaml .
 fi
 
+if [ ! -f .gitignore ]; then
+	cp ../barroit/site-lib/gitignore .gitignore
+fi
+
 pnpm add -D wrangler@latest
 
 if [ ! -f wrangler.jsonc ]; then
