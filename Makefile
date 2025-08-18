@@ -1,11 +1,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-ADDR_FILE  := build/host
-READ_ADDR  := $$(cat $(ADDR_FILE))
+BUILD_DIR  := build
+ADDR_FILE  = $(BUILD_DIR)/host
+READ_ADDR  = $$(cat $(ADDR_FILE))
 WRITE_ADDR := ./scripts/private-ip.py
 
-VITE_HOST     := --host $(READ_ADDR)
-WRANGLER_HOST := --ip   $(READ_ADDR)
+VITE_HOST     = --host=$(READ_ADDR)
+WRANGLER_HOST = --ip=$(READ_ADDR)
 
 ifneq ($(HOSTFREE),)
   ADDR_FILE     := /dev/null
@@ -20,22 +21,22 @@ include exec.mk
 
 live:
 
-build:
-	mkdir build
+$(BUILD_DIR):
+	mkdir $(BUILD_DIR)
 
-init-shared: build
+init-shared: $(BUILD_DIR)
 	$(INIT_SHARED) $(SHARED_DIR)
 
-build/host: build
+$(ADDR_FILE): $(BUILD_DIR)
 	$(WRITE_ADDR) >$(ADDR_FILE)
 
-live: init-shared build/host
+live: init-shared $(ADDR_FILE)
 	$(LIVE)
 
 bundle: init-shared
 	$(BUNDLE)
 
-preview: bundle build/host
+preview: bundle $(ADDR_FILE)
 	npx wrangler dev $(WRANGLER_HOST)
 
 deploy: bundle
