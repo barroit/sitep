@@ -1,8 +1,8 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-SHARED_DIR  := shared/styles shared/react
-INIT_SHARED := scripts/init-shared.sh
+objtree := build
+shared  := shared/styles shared/react
 
-LIVE := npx vite $(VITE_HOST)
-
+SETUP  := scripts/init-shared.sh
+LIVE   := npx vite $(host_opt)
 BUNDLE := npx vite build

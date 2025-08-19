@@ -1,43 +1,44 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-BUILD_DIR  := build
-ADDR_FILE  = $(BUILD_DIR)/host
-READ_ADDR  = $$(cat $(ADDR_FILE))
-WRITE_ADDR := ./scripts/private-ip.py
+objtree := build
+host    = $(objtree)/host
 
-VITE_HOST     = --host=$(READ_ADDR)
-WRANGLER_HOST = --ip=$(READ_ADDR)
+rd_host = $$(cat $(host))
+wr_host := ./scripts/private-ip.py
+
+host_opt = --host=$(rd_host)
+ip_opt   = --ip=$(rd_host)
 
 ifneq ($(HOSTFREE),)
-  ADDR_FILE     := /dev/null
-  WRITE_ADDR    :=
-  VITE_HOST     :=
-  WRANGLER_HOST :=
+  host     := /dev/null
+  wr_host  :=
+  host_opt :=
+  ip_opt   :=
 endif
 
 include exec.mk
 
-.PHONY: init-shared live bundle preview deploy
+.PHONY: setup live bundle preview deploy
 
 live:
 
-$(BUILD_DIR):
-	mkdir $(BUILD_DIR)
+$(objtree):
+	mkdir $(objtree)
 
-init-shared: $(BUILD_DIR)
-	$(INIT_SHARED) $(SHARED_DIR)
+setup: $(objtree)
+	$(SETUP) $(shared)
 
-$(ADDR_FILE): $(BUILD_DIR)
-	$(WRITE_ADDR) >$(ADDR_FILE)
+$(host): $(objtree)
+	$(wr_host) >$(host)
 
-live: init-shared $(ADDR_FILE)
+live: setup $(host)
 	$(LIVE)
 
-bundle: init-shared
+bundle: setup
 	$(BUNDLE)
 
-preview: bundle $(ADDR_FILE)
-	npx wrangler dev $(WRANGLER_HOST)
+preview: bundle $(host)
+	npx wrangler dev $(ip_opt)
 
 deploy: bundle
 	npx wrangler deploy
