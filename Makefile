@@ -2,12 +2,17 @@
 
 objtree := build
 host    = $(objtree)/host
+shared  := shared/styles
 
 rd_host = $$(cat $(host))
 wr_host := ./scripts/private-ip.py
 
 host_opt = --host=$(rd_host)
 ip_opt   = --ip=$(rd_host)
+
+SETUP  := scripts/setup-shared.sh
+LIVE   = npx vite $(host_opt)
+BUNDLE := npx vite build
 
 ifneq ($(HOSTFREE),)
   host     := /dev/null
@@ -16,7 +21,9 @@ ifneq ($(HOSTFREE),)
   ip_opt   :=
 endif
 
-include exec.mk
+ifneq ($(wildcard exec.mk),)
+  include exec.mk
+endif
 
 .PHONY: setup live bundle preview deploy
 

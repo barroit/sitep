@@ -5,15 +5,11 @@ set -e
 
 ln -sf  ../barroit/site-lib/Makefile .
 
-if [ ! -f exec.mk ]; then
-	cp ../barroit/site-lib/exec.mk .
-fi
-
 mkdir -p shared
 ln -snf ../../barroit/site-lib/styles shared/
 
 mkdir -p scripts
-ln -snf ../../barroit/site-lib/scripts/init-shared.sh scripts/
+ln -snf ../../barroit/site-lib/scripts/setup-shared.sh scripts/
 ln -snf ../../barroit/scripts/private-ip.py scripts/
 
 mkdir -p page
