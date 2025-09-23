@@ -1,5 +1,4 @@
-site-lib
-========
+sitep
+=====
 
-This repository stores infra shared across barroit's sites, split from
-barroit.git.
+Shared components for website repos.
