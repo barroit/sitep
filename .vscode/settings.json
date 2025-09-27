@@ -8,6 +8,6 @@
       }
    },
    "files.associations": {
-      "**/headers": "plaintext"
+      "**/cloudflare/_headers": "plaintext"
    }
 }
