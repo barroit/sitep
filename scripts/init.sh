@@ -3,6 +3,9 @@
 
 set -e
 
+cp -f ../sitep/.gitignore .gitignore
+cp -f ../sitep/cmd.mk cmd.mk
+
 ln -sf  ../sitep/Makefile .
 ln -snf ../sitep/styles styles
 ln -snf ../sitep/shared shared

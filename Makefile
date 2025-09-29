@@ -1,29 +1,20 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 objtree := build
-host    = $(objtree)/host
-shared  := shared/styles
+host     = $(objtree)/host
+shared  := styles shared
 
-rd_host = $$(cat $(host))
-wr_host := ./scripts/private-ip.py
-
-host_opt = --host=$(rd_host)
-ip_opt   = --ip=$(rd_host)
-
-SETUP  := scripts/setup-shared.sh
-LIVE   = npx vite $(host_opt)
-BUNDLE := npx vite build
+cat-host = $$(cat $(host))
+host-opt = --host=$(cat-host)
+ip-opt   = --ip=$(cat-host)
 
 ifneq ($(HOSTFREE),)
-  host     := /dev/null
-  wr_host  :=
-  host_opt :=
-  ip_opt   :=
+  host     := .
+  host-opt :=
+  ip-opt   :=
 endif
 
-ifneq ($(wildcard exec.mk),)
-  include exec.mk
-endif
+include cmd.mk
 
 .PHONY: setup live bundle preview deploy
 
@@ -33,19 +24,19 @@ $(objtree):
 	mkdir $(objtree)
 
 setup: $(objtree)
-	$(SETUP) $(shared)
+	$(setup-cmd) $(shared)
 
 $(host): $(objtree)
-	$(wr_host) >$(host)
+	./scripts/ifaddr.py >$(host)
 
 live: setup $(host)
-	$(LIVE)
+	$(live-cmd)
 
 bundle: setup
-	$(BUNDLE)
+	$(bundle-cmd)
 
 preview: bundle $(host)
-	npx wrangler dev $(ip_opt)
+	npx wrangler dev $(ip-opt)
 
 deploy: bundle
 	npx wrangler deploy
